@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Le Minh Tuan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="app">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="b text-danger">PAGINATION OF MINH TUAN</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-reponsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <th class="text-center align-middle">#</th>
+                                    <th class="text-center align-middle">Name</th>
+                                    <th class="text-center align-middle">Email</th>
+                                    <th class="text-center align-middle">Address</th>
+                                    <th class="text-center align-middle">Phone</th>
+                                    <th class="text-center align-middle">BirthDay</th>
+                                </thead>
+                                <tbody>
+                                    <template v-for="(v,k) in list">
+                                        <tr>
+                                            <td class="text-center align-middle">{{ k+1 }}</td>
+                                            <td class="text-center align-middle">{{ v.name }}</td>
+                                            <td class="text-center align-middle">{{ v.email }}</td>
+                                            <td class="text-center align-middle">{{ v.address }}</td>
+                                            <td class="text-center align-middle">{{ v.phone }}</td>
+                                            <td class="text-center align-middle">{{ v.birthdate }}</td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mt-5 text-center">
+                <button class="btn btn-danger" @click="paginationLinkPrev()"><b>Previous</b></button>
+                <button class="btn btn-danger" @click="paginationLinkNext()"><b>Next</b></button>
+                <button class="btn btn-danger" @click="toLastPage()"><b>Last Page</b></button>
+
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"
+        integrity="sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                list: [],
+                url_default: 'https://api.minhtuandng.id.vn/api/faker/data',
+                url_page: 'https://api.minhtuandng.id.vn/api/faker/data?page=',
+                page: 1,
+                fristPage: 1,
+            },
+            created() {
+                this.getData()
+            },
+            methods: {
+                getData() {
+                    axios
+                        .get(this.url_default)
+                        .then((res) => {
+                            this.list = res.data.data.data
+                            this.lastPage = res.data.data.last_page
+                        })
+                },
+                getPage(url) {
+                    axios
+                        .get(url)
+                        .then((res) => {
+                            this.list = res.data.data.data
+                        })
+                },
+                toLastPage() {
+                    let url = this.url_page + this.lastPage
+                    this.getPage(url)
+                },
+                paginationLinkNext() {
+                    this.page++
+                    let url = this.url_page + this.page
+                    this.getPage(url)
+                },
+                paginationLinkPrev() {
+                    this.page--
+                    if (this.page <= 1) {
+                        this.page = 1
+                    }
+                    let url = this.url_page + this.page
+                    this.getPage(url)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
